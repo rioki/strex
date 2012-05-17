@@ -1,0 +1,10 @@
+
+*.txt
+*.tags
+*.mk
+*.session
+/obj
+/bin
+/.build-release
+/.build-debug
+/lib
