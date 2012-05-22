@@ -6,13 +6,14 @@ CXXFLAGS 	+= -Iinclude -Iinclude/strex
 .PHONY: clean test
 .SUFFIXES: .o .cpp
 
-all: lib/libstrex.a bin/strextest
+all: lib/libstrex.a
 
 src 		= src/files.cpp \
 			  src/strings.cpp
 test_src 	= test/main.cpp \
 			  test/test_compose.cpp \
-			  test_lexical_cast.cpp
+			  test/test_lexical_cast.cpp \
+			  test/test_strings.cpp
 	
 ifeq ($(MSYSTEM), MINGW32)
   EXEEXT=*.exe
@@ -23,18 +24,18 @@ test_objs = $(patsubst %.cpp, %.o, $(test_src))
 deps = $(subst .o,.d,$(objs))
 test_deps = $(subst .o,.d,$(test_objs))
 
-lib/libstrex.a: src/files.o src/strings.o 
+lib/libstrex.a: $(objs) 
 	@echo Creating $@ library...
 	@$(AR) crf $@ $^
 	
-bin/strextest: test/main.o test/test_compose.o test/test_lexical_cast.o lib/libstrex.a
+bin/strextest: $(test_objs) lib/libstrex.a
 	@echo Linking $@ 
 	@$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -lUnitTest++ -Llib -lstrex  -o $@
 
 clean: 
-	rm -f src/*.o src/*.d test/*.o test/*.d lib/libstrex.a bin/strextest$(EXEEXT)
+	rm -f */*.o */*.d lib/libstrex.a bin/strextest$(EXEEXT)
 
-test: bin/strextest
+test: bin/strextest 
 	@echo Running unit tests.
 	@./bin/strextest
 
