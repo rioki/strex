@@ -1,10 +1,4 @@
-
-*.txt
-*.tags
-*.mk
-*.session
-/obj
+*.o
+*.d
 /bin
-/.build-release
-/.build-debug
 /lib
