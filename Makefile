@@ -1,13 +1,13 @@
 
+VERSION	     = 0.1.0
 CXX 		?= g++ -std=c++0x
 CXXFLAGS 	?= -g -Wall 
-CXXFLAGS 	+= -Iinclude -Iinclude/strex
-LDFLAGS     += -Llib
+CXXFLAGS 	+= -I.
 
 strex_hdr	= 
 
-strex_src   = src/files.cpp \
-			  src/strings.cpp
+strex_src   = strex/files.cpp \
+			  strex/strings.cpp
 test_src 	= test/main.cpp \
 			  test/test_compose.cpp \
 			  test/test_lexical_cast.cpp \
@@ -30,14 +30,17 @@ else
   LIBEXT=.so
 endif
 
-.PHONY: all check install uninstall dist
+.PHONY: all check clean install uninstall dist
 .SUFFIXES: .o .cpp
 
-all: bin/strex.$(LIBEXT)
+all: strex$(LIBEXT)
 
-check: bin/test$(EXEEXT)
-	./bin/test$(EXEEXT)
+check: test$(EXEEXT)
+	./test$(EXEEXT)
 
+clean: 
+	rm -f */*.o */*.d strex$(LIBEXT) libstrex.a test$(EXEEXT) 	
+	
 install:
 	echo TODO
 
@@ -47,18 +50,11 @@ uninstall:
 dist:
 	echo TODO
 
-bin/strex$(LIBEXT): $(patsubst %.cpp, %.o, $(strex_src))
-	mkdir -p bin
-	mkdir -p lib
-	$(CXX) -shared -fPIC $(LDFLAGS) -Wl,--out-implib=$(patsubst bin/%.$(LIBEXT),lib/lib%.a, $@) $^ -o $@
+strex$(LIBEXT): $(patsubst %.cpp, %.o, $(strex_src))
+	$(CXX) -shared -fPIC $(LDFLAGS) -Wl,--out-implib=$(patsubst %$(LIBEXT),lib%.a, $@) $^ -o $@
 	
-bin/test$(EXEEXT): bin/strex$(LIBEXT) $(patsubst %.cpp, %.o, $(test_src)) 
+test$(EXEEXT): strex$(LIBEXT) $(patsubst %.cpp, %.o, $(test_src)) 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ $(test_libs) -o $@
-
-clean: 
-	rm -f */*.o */*.d bin/* lib/*
-
-
 	
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -MD -c $< -o $(patsubst %.cpp, %.o, $<)	
