@@ -74,9 +74,9 @@ namespace strex
             std::vector<char> buff(size);
             
             size_t rcnt = 0;
-            rcnt = fread (&buff[0], 1, size, fh);
+            rcnt = fread(&buff[0], 1, size, fh);
                         
-            if (rcnt != size)
+            if (rcnt != static_cast<size_t>(size))
             {
                 throw std::runtime_error(compose("Failed to read %0.", name));
             }
