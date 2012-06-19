@@ -1,49 +1,69 @@
 
-CXX 		?= g++
-CXXFLAGS 	?= -g -Wall -W -ansi # -pedantic
+CXX 		?= g++ -std=c++0x
+CXXFLAGS 	?= -g -Wall 
 CXXFLAGS 	+= -Iinclude -Iinclude/strex
+LDFLAGS     += -Llib
 
-.PHONY: clean test
-.SUFFIXES: .o .cpp
+strex_hdr	= 
 
-all: lib/libstrex.a
-
-src 		= src/files.cpp \
+strex_src   = src/files.cpp \
 			  src/strings.cpp
 test_src 	= test/main.cpp \
 			  test/test_compose.cpp \
 			  test/test_lexical_cast.cpp \
 			  test/test_strings.cpp
+			  
+test_libs   = -lUnitTest++
+			  
+dist_files  = $(strex_hdr) \
+			  $(strex_src) \
+			  $(text_src) \
+			  Makefile \
+			  README.md
 	
 ifeq ($(MSYSTEM), MINGW32)
-  EXEEXT=*.exe
+  EXEEXT=.exe
+  LIBEXT=.dll
+else
+  EXEEXT=
+  LIBEXT=.so
 endif
 
-objs = $(patsubst %.cpp, %.o, $(src))
-test_objs = $(patsubst %.cpp, %.o, $(test_src))
-deps = $(subst .o,.d,$(objs))
-test_deps = $(subst .o,.d,$(test_objs))
+.PHONY: all check install uninstall dist
+.SUFFIXES: .o .cpp
 
-lib/libstrex.a: $(objs) 
-	@echo Creating $@ library...
-	@$(AR) crf $@ $^
+all: bin/strex.$(LIBEXT)
+
+check: bin/test$(EXEEXT)
+	./bin/test$(EXEEXT)
+
+install:
+	echo TODO
+
+uninstall:
+	echo TODO
+
+dist:
+	echo TODO
+
+bin/strex$(LIBEXT): $(patsubst %.cpp, %.o, $(strex_src))
+	mkdir -p bin
+	mkdir -p lib
+	$(CXX) -shared -fPIC $(LDFLAGS) -Wl,--out-implib=$(patsubst bin/%.$(LIBEXT),lib/lib%.a, $@) $^ -o $@
 	
-bin/strextest: $(test_objs) lib/libstrex.a
-	@echo Linking $@ 
-	@$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -lUnitTest++ -Llib -lstrex  -o $@
+bin/test$(EXEEXT): bin/strex$(LIBEXT) $(patsubst %.cpp, %.o, $(test_src)) 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ $(test_libs) -o $@
 
 clean: 
-	rm -f */*.o */*.d lib/libstrex.a bin/strextest$(EXEEXT)
+	rm -f */*.o */*.d bin/* lib/*
 
-test: bin/strextest 
-	@echo Running unit tests.
-	@./bin/strextest
 
-%.o : %.cpp
-	@echo Building $<
-	@$(CXX) $(CXXFLAGS) -MD -c $< -o $(patsubst %.cpp, %.o, $<)
+	
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -MD -c $< -o $(patsubst %.cpp, %.o, $<)	
 
 ifneq "$(MAKECMDGOALS)" "clean"
+deps  = $(patsubst %.cpp, %.d, $(src))
+deps  = $(patsubst %.cpp, %.d, $(test_src))
 -include $(deps)
--include $(test_deps)
 endif
