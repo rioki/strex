@@ -11,7 +11,8 @@ strex_src   = src/files.cpp \
 test_src 	= test/main.cpp \
 			  test/test_compose.cpp \
 			  test/test_lexical_cast.cpp \
-			  test/test_strings.cpp
+			  test/test_strings.cpp \
+			  test/test_files.cpp
 			  
 test_libs   = -lUnitTest++
 			  
