@@ -3,11 +3,14 @@ VERSION	     = 0.1.0
 CXX 		?= g++ -std=c++0x
 CXXFLAGS 	?= -g -Wall 
 CXXFLAGS 	+= -I.
+prefix      ?= /usr/local
 
-strex_hdr	= 
+strex_hdr	= strex/files.h \
+			  strex/strings.h
 
 strex_src   = strex/files.cpp \
 			  strex/strings.cpp
+			  
 test_src 	= test/main.cpp \
 			  test/test_strings.cpp \
 			  test/test_files.cpp
@@ -40,7 +43,12 @@ clean:
 	rm -f */*.o */*.d strex$(LIBEXT) libstrex.a test$(EXEEXT) 	
 	
 install:
-	echo TODO
+	mkdir -p $(prefix)/include/strex
+	mkdir -p $(prefix)/bin
+	mkdir -p $(prefix)/lib
+	cp $(strex_hdr) $(prefix)/include/strex
+	cp strex$(LIBEXT) $(prefix)/bin
+	cp libstrex.a $(prefix)/lib
 
 uninstall:
 	echo TODO
