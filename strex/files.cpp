@@ -3,7 +3,7 @@
 
 #include <cstdio>
 #include <stdexcept>
-#include "compose.h"
+#include "strings.h"
 
 namespace strex
 {
