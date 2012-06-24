@@ -151,6 +151,13 @@ namespace strex
     }
 
     std::string compose(const std::string& format);
+    
+    /**
+     * Explode a string.
+     *
+     * BOOOM!
+     **/
+    std::vector<std::string> explode(const std::string& str, const std::string& delimiter);
 }
 
 #endif

@@ -100,5 +100,65 @@ namespace strex
             throw std::runtime_error(compose("Failed to delete %0.", name));
         }
     }
+
+//------------------------------------------------------------------------------    
+    char get_dir_seperator()
+    {
+        #ifdef _WIN32
+        return '\\';
+        #else
+        return '/';
+        #endif
+    }
+    
+//------------------------------------------------------------------------------
+    std::string join_path(const std::string& a, const std::string& b)
+    {
+        if (a.empty())
+        {
+            return b;
+        }
+        if (b.empty())
+        {
+            return a;
+        }
+        
+        std::string ac;
+        std::string bc;
+        
+        if (a[a.size() - 1] == '/' || a[a.size() - 1] == '\\')
+        {
+            ac = a.substr(0, a.size() - 1);
+        }
+        else
+        {
+            ac = a;
+        }
+        
+        if (b[0] == '/' || b[0] == '\\')
+        {
+            bc = b.substr(1);
+        }
+        else
+        {
+            bc = b;
+        }
+        
+        return ac + get_dir_seperator() + bc;
+    }
+
+//------------------------------------------------------------------------------
+    std::string get_dir(const std::string& path)
+    {
+        unsigned int i = path.find_last_of("\\/");
+        if (i == std::string::npos)
+        {
+            return "";
+        }
+        else
+        {
+            return path.substr(0, i);
+        }
+    }    
 }
 

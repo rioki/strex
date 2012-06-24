@@ -39,5 +39,33 @@ namespace strex
         return compose(format, "", "", "", "", "", "", "", "", "", "");
     }   
     
+//------------------------------------------------------------------------------
+    std::vector<std::string> explode(const std::string& str, const std::string& delimiter)
+    {
+        std::vector<std::string> gibs;
+        size_t start = 0;
+        size_t end = 0;
+
+        while ((start != std::string::npos) && (start < str.size()))
+        {
+            end = str.find(delimiter, start);
+
+            std::string gib;
+            if (end == std::string::npos)
+            {
+                gib = str.substr(start);
+                start = std::string::npos;
+            }
+            else
+            {
+                gib = str.substr(start, end - start);
+                start = end + delimiter.size();
+            }
+            gibs.push_back(gib);
+        }
+
+        return gibs;
+    }
+    
 }
 

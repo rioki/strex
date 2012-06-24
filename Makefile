@@ -2,7 +2,7 @@
 VERSION	     = 0.1.0
 CXX 		?= g++ -std=c++0x
 CXXFLAGS 	?= -g -Wall 
-CXXFLAGS 	+= -I.
+CXXFLAGS 	:= -I. $(CXXFLAGS)
 prefix      ?= /usr/local
 
 strex_hdr	= strex/files.h \

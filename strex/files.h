@@ -36,6 +36,18 @@ namespace strex
      * @param name the name of the file
      **/
     void delete_file(const std::string& name);
+    
+    /**
+     * Get the directory seperator for the current platform.
+     **/
+    char get_dir_seperator();
+    
+    /**
+     * Join two parts of a path.
+     **/
+    std::string join_path(const std::string& a, const std::string& b);
+    
+    std::string get_dir(const std::string& path);
 }
 
 #endif
